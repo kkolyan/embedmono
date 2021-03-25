@@ -7,11 +7,18 @@
 #include <iostream>
 #pragma comment(lib, "mono-2.0.lib")
 
+extern "C" {
+__declspec(dllexport)
+void SayMyaw() {
+    std::cout << "Myaw!! (C++)" << std::endl;
+}
+}
+
 
 int main(int argc, char* argv[])
 {
 #pragma region Load and compile the script
-    std::string scriptPath(R"(Dog.cs)");
+    std::string scriptPath(R"(Dog.cs Cat.cs)");
     std::string command = "\"" MONO_HOME "/bin/mcs\" " + scriptPath + " -target:library";
 
     //Compile the script
@@ -139,6 +146,35 @@ int main(int argc, char* argv[])
         //Run the method
         std::cout << "Running the method: " << BarkMethodDescStr << std::endl;
         mono_runtime_invoke(method, dogA, args, nullptr);
+    }
+#pragma endregion
+
+#pragma region Run a static method delegated back to native
+    {
+        //Build a method description object
+        MonoMethodDesc* TypeMethodDesc;
+        char* TypeMethodDescStr = "Cat:SaySomething()";
+        TypeMethodDesc = mono_method_desc_new(TypeMethodDescStr, NULL);
+        if (!TypeMethodDesc)
+        {
+            std::cout << "mono_method_desc_new failed" << std::endl;
+//            system("pause");
+            return 1;
+        }
+
+        //Search the method in the image
+        MonoMethod* method;
+        method = mono_method_desc_search_in_image(TypeMethodDesc, image);
+        if (!method)
+        {
+            std::cout << "mono_method_desc_search_in_image failed" << std::endl;
+//            system("pause");
+            return 1;
+        }
+
+        //run the method
+        std::cout << "Running the static method: " << TypeMethodDescStr << std::endl;
+        mono_runtime_invoke(method, nullptr, nullptr, nullptr);
     }
 #pragma endregion
 

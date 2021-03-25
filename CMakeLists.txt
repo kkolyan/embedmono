@@ -16,5 +16,9 @@ target_link_libraries(embedmono PRIVATE
         )
 
 configure_file("${MONO_HOME}/bin/mono-2.0-sgen.dll" "${PROJECT_BINARY_DIR}/mono-2.0-sgen.dll" COPYONLY)
-configure_file("${PROJECT_SOURCE_DIR}/cs/Dog.cs" "${PROJECT_BINARY_DIR}/Dog.cs")
 
+list(APPEND cs "Cat.cs")
+list(APPEND cs "Dog.cs")
+foreach (csFile ${cs})
+    configure_file("${PROJECT_SOURCE_DIR}/cs/${csFile}" "${PROJECT_BINARY_DIR}/${csFile}")
+endforeach()
