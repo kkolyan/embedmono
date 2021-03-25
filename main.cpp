@@ -5,14 +5,12 @@
 #include <cstdlib>
 #include <string>
 #include <iostream>
-#pragma comment(lib, "mono-2.0-sgen.lib")
+#pragma comment(lib, "mono-2.0.lib")
 
-#define MONO_HOME "C:\\Program Files\\Mono"
 
 int main(int argc, char* argv[])
 {
 #pragma region Load and compile the script
-    std::cout << "hello" << std::endl;
     std::string scriptPath(R"(Dog.cs)");
     std::string command = "\"" MONO_HOME "/bin/mcs\" " + scriptPath + " -target:library";
 
