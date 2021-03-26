@@ -5,7 +5,9 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_executable(embedmono main.cpp)
 
-set(MONO_HOME "C:/Program Files/Mono")
+if (NOT DEFINED MONO_HOME)
+    set(MONO_HOME "C:/Program Files/Mono")
+endif ()
 
 target_compile_definitions(embedmono PRIVATE MONO_HOME=\"${MONO_HOME}\")
 
